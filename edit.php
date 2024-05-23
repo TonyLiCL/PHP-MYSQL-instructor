@@ -19,7 +19,15 @@ $pdo = new PDO($dsn, 'root', '');
     <?php
     $user = $pdo->query("select * from `students` where `id`='{$_GET['id']}'")->fetch(PDO::FETCH_ASSOC);
     ?>
-    <form action="save.php" method='post'>
+    <?php
+    if (isset($_GET['error'])) {
+        echo "<span style='color:red'>";
+        echo $_GET['error'];
+        echo "</span>";
+    }
+
+    ?>
+    <form action="store.php" method='post'>
         <div>
             <label for="school_num">學號：<?= $user['school_num']; ?></label>
         </div>
@@ -47,7 +55,8 @@ $pdo = new PDO($dsn, 'root', '');
                 <?php
                 $depts = $pdo->query('select * from dept')->fetchAll();
                 foreach ($depts as $dept) {
-                    echo "<option value='{$dept['id']}'>{$dept['name']}</option>";
+                    $selected = ($dept['id'] == $user['dept']) ? 'selected' : '';
+                    echo "<option value='{$dept['id']}' $selected>{$dept['name']}</option>";
                 }
                 ?>
 
@@ -59,7 +68,8 @@ $pdo = new PDO($dsn, 'root', '');
                 <?php
                 $schools = $pdo->query('select * from graduate_school')->fetchAll();
                 foreach ($schools as $school) {
-                    echo "<option value='{$school['id']}'>{$school['county']}{$school['name']}</option>";
+                    $selected = ($school['id'] == $user['graduate_at']) ? 'selected' : '';
+                    echo "<option value='{$school['id']}' $selected>{$school['county']}{$school['name']}</option>";
                 }
                 ?>
             </select>
@@ -67,14 +77,14 @@ $pdo = new PDO($dsn, 'root', '');
         <div>
             <label for="status_code">畢業狀態</label>
             <select name="status_code" id="status_code">
-                <option value="001">畢業</option>
-                <option value="002">補校</option>
-                <option value="003">補結</option>
-                <option value="004">結業</option>
+                <option value="001" <?= ($user['status_code'] == '001') ? 'selected' : ''; ?>>畢業</option>
+                <option value="002" <?= ($user['status_code'] == '002') ? 'selected' : ''; ?>>補校</option>
+                <option value="003" <?= ($user['status_code'] == '003') ? 'selected' : ''; ?>>補結</option>
+                <option value="004" <?= ($user['status_code'] == '004') ? 'selected' : ''; ?>>結業</option>
             </select>
         </div>
-
-        <input type="submit" value="新增"><input type="reset" value="重置">
+        <input type="hidden" name="id" value="<?= $user['id']; ?>">
+        <input type="submit" value="修改"><input type="reset" value="重置">
 
     </form>
 
