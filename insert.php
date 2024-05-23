@@ -21,9 +21,9 @@ $pdo = new PDO($dsn, 'root', '');
             <label for="school_num">學號：</label>
             <?php
             $max = $pdo->query("select max(`school_num`) as 'max' from `students`")->fetch(PDO::FETCH_ASSOC);
-
+            echo $max['max'] + 1;
             ?>
-            <input type="number" min='1' name="school_num" id="school_num" value='<?= $max['max'] + 1; ?>'>
+            <input type="hidden" min='1' name="school_num" id="school_num" value='<?= $max['max'] + 1; ?>'>
         </div>
         <div>
             <label for="name">姓名：</label><input type="text" name="name" id="name">
